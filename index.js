@@ -9,10 +9,6 @@ const server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || config.defaultPort, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
-const apiaiApp = '6f72b10d80c54b2a8000b1dac5ea449b';
-const WEATHER_API_KEY = 'e5f8121716539c929cec4d955d207204';
-const defaultPort = 3987;
-
 
 /**
  *  Create connector
