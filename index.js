@@ -1,4 +1,5 @@
 const config = require('./config/config');
+const dialogs = require('./dialogs/dialog');
 const builder = require('botbuilder');
 const restify = require('restify');
 const apiairecognizer = require('api-ai-recognizer');
@@ -42,6 +43,5 @@ bot.set('persistConversationData', true);
  * Entry point
  */
 bot.dialog('hello', session => {
-    session.send("hello world");
-    session.endDialog();
+    dialogs.helloWorld(session);
 });
