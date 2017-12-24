@@ -28,20 +28,41 @@ server.post('/api/messages', connector.listen());
  * Instanciate bot
  * @type {UniversalBot}
  */
-const bot = new builder.UniversalBot(connector, session => {
-    session.beginDialog('hello')
-});
+const bot = new builder.UniversalBot(connector);
 
 /**
  * Enable conversation data persistence
  */
 bot.set('persistConversationData', true);
 
-
+/**
+ * Instanciate api.ai (recently DialogFlow)
+ * @type {ApiAiRecognizer}
+ */
+const recognizer = new apiairecognizer(config.apiaiApp);
+/**
+ * Instanciate defined intents
+ * @type {IntentDialog}
+ */
+const intents = new builder.IntentDialog({
+    recognizers: [recognizer]
+});
 
 /**
  * Entry point
  */
-bot.dialog('hello', session => {
-    dialogs.helloWorld(session);
+bot.dialog('/', intents);
+
+/**
+ *  Default intent
+ */
+intents.onDefault((session, args) => {
+    console.log('args', args);
+    console.log('reps', args.entities[0].entity);
+    if (!args.entities[0].entity){
+        session.send("Sorry...can you please rephrase?");
+    }else{
+        session.send(args.entities[0].entity);
+    }
+
 });
