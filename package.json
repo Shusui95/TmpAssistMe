@@ -1,0 +1,26 @@
+{
+  "name": "assistme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shusui95/AssistMe.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shusui95/AssistMe/issues"
+  },
+  "homepage": "https://github.com/Shusui95/AssistMe#readme",
+  "dependencies": {
+    "api-ai-recognizer": "^1.0.1",
+    "botbuilder": "^3.4.4",
+    "request": "^2.79.0",
+    "restify": "^6.2.3"
+  }
+}
