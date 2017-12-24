@@ -32,11 +32,20 @@ server.post('/api/messages', connector.listen());
  * @type {UniversalBot}
  */
 const bot = new builder.UniversalBot(connector, session => {
-    session.send("Hello world")
-    session.endDialog();
+    session.beginDialog('hello')
 });
 
 /**
  * Enable conversation data persistence
  */
 bot.set('persistConversationData', true);
+
+
+
+/**
+ * Entry point
+ */
+bot.dialog('hello', session => {
+    session.send("hello world");
+    session.endDialog();
+});
