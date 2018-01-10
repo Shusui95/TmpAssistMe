@@ -33,7 +33,7 @@ const connector = new builder.ChatConnector({
 /**
  * Open an url
  */
-server.post('/api/messages', connector.listen());
+server.post('/', connector.listen());
 
 /**
  * Instanciate bot
