@@ -6,6 +6,8 @@ const server = require('express')();
 const apiairecognizer = require('api-ai-recognizer');
 const footballProvider = require('./providers/footballProvider');
 const request = require('request');
+const apiai = require('apiai');
+const apiaiApp = apiai(config.apiaiApp);
 
 server.use(bodyParser.urlencoded({extended: false}));
 server.use(bodyParser.json());
@@ -23,25 +25,13 @@ server.listen(process.env.port || process.env.PORT || config.defaultPort, () => 
     console.log('%s listening to %s', server.name, server.url);
 });
 
-/**
- * Instanciate bot 
- * @type {UniversalBot}
- */
-//const bot = new builder.UniversalBot();
-const FacebookBot = require('botbuilder-facebook');
-const bot = new FacebookBot({
-    pageToken: process.env.PAGE_ACCESS_TOKEN,
-    validationToken: process.env.VERIFICATION_TOKEN
-});
-
-
 // Server index page
 server.get('/', function (req, res) {
     res.send('Deployed!');
 });
 
 server.get('/webhook', (req, res) => {
-    console.log('Verified webhook', req.query['hub.verify_token'], process.env.VERIFICATION_TOKEN, req.query['hub.challenge']);
+    console.log('Verified webhook', req.query['hub.verify_token'], process.env.VERIFY_TOKEN, req.query['hub.challenge']);
     if (req.query['hub.verify_token'] === process.env.VERIFICATION_TOKEN) {
         res.status(200).send(req.query['hub.challenge']);
     } else {
@@ -53,11 +43,13 @@ server.get('/webhook', (req, res) => {
 server.post('/webhook', (req, res) => {
     // Make sure this is a page subscription
     console.log('body', req.body);
+    console.log('entry', req.body.entry);
     if (req.body.object === 'page') {
         // Iterate over each entry
         // There may be multiple entries if batched
         req.body.entry.forEach((entry) => {
             // Iterate over each messaging event
+            console.log('messaging', entry.messaging);
             entry.messaging.forEach((event) => {
                 if (event.postback) {
                     processMessage(event);
@@ -85,13 +77,27 @@ function processMessage(event) {
         // You may get a text or attachment but not both
         if (message.text) {
             let formattedMsg = message.text.toLowerCase().trim();
+            let apiai = apiaiApp.textRequest(formattedMsg, {
+                sessionId: 'tabby_cat'
+            });
+
+            apiai.on('response', (response) => {
+                console.log('focuuuuus', response);
+                let aiText = response.result.fulfillment.speech;
+
+                sendMessage(senderId, {text: 'Sorry, I don\'t understand your request. sendToDialogFlow'});
+            });
+
+            apiai.on('error', (error) => {
+                console.log(error);
+            });
+
+            apiai.end();
 
             // If we receive a text message, check to see if it matches any special
             // keywords and send back the corresponding movie detail.
             // Otherwise, search for new movie.
-            bot.botService.receive(formattedMsg);
-            res.sendStatus(200);
-            //sendMessage(senderId, {text: "Sorry, I don't understand your request. sendToDialogFlow"})
+
         } else if (message.attachments) {
             sendMessage(senderId, {text: 'Sorry, I don\'t understand your request.'});
         }
@@ -148,6 +154,12 @@ function sendMessage(recipientId, message) {
     });
 }
 
+const connector = new builder.ChatConnector({});
+/**
+ * Instanciate bot
+ * @type {UniversalBot}
+ */
+const bot = new builder.UniversalBot(connector);
 /**
  * Enable conversation data persistence
  */

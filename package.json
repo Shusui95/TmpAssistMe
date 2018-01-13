@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Shusui95/AssistMe#readme",
   "dependencies": {
     "api-ai-recognizer": "^1.0.1",
+    "apiai": "^4.0.3",
     "body-parser": "^1.18.2",
     "botbuilder": "^3.13.1",
     "botbuilder-facebook": "^1.0.7",
