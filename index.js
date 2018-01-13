@@ -80,9 +80,11 @@ function processMessage(event) {
             let apiai = apiaiApp.textRequest(formattedMsg, {
                 sessionId: 'tabby_cat'
             });
-
+            sendMessage(senderId, "try 1")
+            sendMessage(senderId, "try 2")
             apiai.on('response', (response) => {
                 console.log('focuuuuus', response);
+                sendMessage(senderId, "success")
                 if(response.result.action === 'input.unknown'){
                     console.log('fiiirst', response.result.action,response.result.action === 'input.unknown')
                     sendMessage(senderId, 'I didn\'t understand, if you need some help type just \'help\'')
@@ -111,6 +113,7 @@ function processMessage(event) {
 
             apiai.on('error', (error) => {
                 console.log(error);
+                sendMessage(senderId, "error")
                 sendMessage(senderId, error)
             });
 
