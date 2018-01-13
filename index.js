@@ -221,7 +221,7 @@ function sendMessage(res, recipientId, message) {
         if (error) {
             console.log('Error sending message: ' + response.error);
         }else{
-            console.log('send successful')
+            console.log('send successful',error,response,body)
         }
     });
 }
