@@ -95,8 +95,10 @@ server.post('/webhook', (req, res) => {
             entry.messaging.forEach((event) => {
                 if (event.postback) {
                     processMessage(event);
+                    res.sendStatus(200)
                 } else if (event.message) {
                     processMessage(event);
+                    res.sendStatus(200)
                 }
             });
         });
@@ -121,6 +123,7 @@ function processMessage(event) {
             let formattedMsg = message.text.toLowerCase().trim();
             sendMessage(senderId, "try 1")
             sendMessage(senderId, "try 2")
+            res.sendStatus(200)
             // let apiai = apiaiApp.textRequest(formattedMsg, {
             //     sessionId: 'tabby_cat'
             // });
@@ -167,6 +170,7 @@ function processMessage(event) {
 
         } else if (message.attachments) {
             sendMessage(senderId, {text: 'Sorry, I don\'t understand your request.'});
+            res.sendStatus(200)
         }
     }
 }
