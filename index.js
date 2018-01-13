@@ -6,7 +6,7 @@ const server = require('express')();
 const apiairecognizer = require('api-ai-recognizer');
 const footballProvider = require('./providers/footballProvider');
 
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: false}));
 server.use(bodyParser.json());
 
 /**
