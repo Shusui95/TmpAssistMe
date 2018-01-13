@@ -16,7 +16,7 @@ const enMessages = require('./lang/en.json');
 
 // Setup Restify Server
 const server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || config.defaultPort, function () {
+server.listen(process.env.port || process.env.PORT || config.defaultPort, () => {
     console.log('%s listening to %s', server.name, server.url);
 });
 
@@ -33,7 +33,17 @@ const connector = new builder.ChatConnector({
 /**
  * Open an url
  */
-server.post('/', connector.listen());
+server.post('/api/messages', connector.listen());
+
+server.get('/webhook', (req, res) => {
+    if (req.query["hub.verify_token"] === "this_is_my_token") {
+        console.log("Verified webhook");
+        res.status(200).send(req.query["hub.challenge"]);
+    } else {
+        console.error("Verification failed. The tokens do not match.");
+        res.sendStatus(403);
+    }
+});
 
 /**
  * Instanciate bot
