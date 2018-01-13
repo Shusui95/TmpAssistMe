@@ -85,7 +85,6 @@ server.post('/query', (req, res) => {
 server.post('/webhook', (req, res) => {
     // Make sure this is a page subscription
     console.log('body', req.body);
-    console.log('entry', req.body.entry);
     if (req.body.object === 'page') {
         // Iterate over each entry
         // There may be multiple entries if batched
@@ -93,6 +92,7 @@ server.post('/webhook', (req, res) => {
             // Iterate over each messaging event
             console.log('messaging', entry.messaging);
             entry.messaging.forEach((event) => {
+                console.log('eveeeeent', event)
                 if (event.postback) {
                     processMessage(res, event);
 
