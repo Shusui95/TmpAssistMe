@@ -39,7 +39,7 @@ server.get('/webhook', (req, res) => {
     }
 });
 
-server.post('ai', (req, res) => {
+server.post('/ai', (req, res) => {
     sendMessage(senderId, "try 1")
     sendMessage(senderId, "try 2")
     console.log('focuuuuus', response);
