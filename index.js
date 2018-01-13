@@ -53,6 +53,8 @@ app.post("/webhook", (req, res) => {
             });
         });
         res.sendStatus(200);
+    }else{
+        sendMessage(event.sender.id, "echo")
     }
 });
 
