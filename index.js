@@ -37,12 +37,12 @@ server.post('/api/messages', connector.listen());
 
 server.get('/webhook', (req, res) => {
     if (req.query["hub.verify_token"] === process.env.VERIFY_TOKEN) {
-        console.log("Verified webhook", res);
+        console.log("Verified webhook");
 
-        res.status(200).send(req.query["hub.challenge"]);
+        res.send(200, req.query["hub.challenge"]);
     } else {
         console.error("Verification failed. The tokens do not match.", res);
-        res.status(403).send("Verification failed. The tokens do not match.");
+        res.send(403, "Verification failed. The tokens do not match.");
     }
 });
 
