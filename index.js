@@ -24,7 +24,7 @@ server.listen(process.env.port || process.env.PORT || config.defaultPort, () => 
 });
 
 /**
- * Instanciate bot
+ * Instanciate bot 
  * @type {UniversalBot}
  */
 //const bot = new builder.UniversalBot();
