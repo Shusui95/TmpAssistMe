@@ -117,12 +117,12 @@ function processMessage(res, event) {
 
         console.log('Received message from senderId: ' + senderId);
         console.log('Message is: ' + JSON.stringify(message));
-
+        sendMessage(senderId, message.text)
         // You may get a text or attachment but not both
         if (message.text) {
             let formattedMsg = message.text.toLowerCase().trim();
-            sendMessage(res, senderId, "try 1")
-            sendMessage(res, senderId, "try 2")
+            sendMessage(senderId, "try 1")
+            sendMessage(senderId, "try 2")
 
             // let apiai = apiaiApp.textRequest(formattedMsg, {
             //     sessionId: 'tabby_cat'
@@ -169,7 +169,7 @@ function processMessage(res, event) {
             // Otherwise, search for new movie.
 
         } else if (message.attachments) {
-            sendMessage(res, senderId, {text: 'Sorry, I don\'t understand your request.'});
+            sendMessage(senderId, {text: 'Sorry, I don\'t understand your request.'});
         }
     }
 }
@@ -208,7 +208,7 @@ function processMessage(res, event) {
 // }
 
 // sends message to user
-function sendMessage(res, recipientId, message) {
+function sendMessage(recipientId, message) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
