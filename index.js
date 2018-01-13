@@ -37,7 +37,7 @@ server.post('/api/messages', connector.listen());
 
 server.get('/webhook', (req, res) => {
     if (req.query["hub.verify_token"] === process.env.VERIFY_TOKEN) {
-        console.log("Verified webhook");
+        console.log("Verified webhook", req);
 
         res.send(200, req.query["hub.challenge"]);
     } else {
