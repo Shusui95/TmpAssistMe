@@ -28,12 +28,10 @@ server.get("/", function (req, res) {
 });
 
 server.get('/webhook', (req, res) => {
+    console.log("Verified webhook", req.query["hub.verify_token"],process.env.VERIFY_TOKEN, req.query["hub.challenge"]);
     if (req.query["hub.verify_token"] === process.env.VERIFY_TOKEN) {
-        console.log("Verified webhook", req.query["hub.verify_token"], req.query["hub.challenge"]);
-
         res.status(200).send(req.query["hub.challenge"]);
     } else {
-        console.error("Verification failed. The tokens do not match.", res);
         res.status(403).send("Verification failed. The tokens do not match.");
     }
 });
