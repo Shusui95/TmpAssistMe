@@ -58,7 +58,7 @@ server.post('/webhook', (req, res) => {
                 }
             });
         });
-        res.sendStatus(200);
+
     } else {
         console.log('req', req.body);
         res.sendStatus(200);
