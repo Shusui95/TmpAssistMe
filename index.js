@@ -11,8 +11,8 @@ const footballProvider = require('./providers/footballProvider');
  *  Language cannot be changed after creation of the agent.
  *  The NodeJS client doesn't permit this for now
  */
-const frMessages = require('./lang/fr.json');
-const enMessages = require('./lang/en.json');
+// const frMessages = require('./lang/fr.json');
+// const enMessages = require('./lang/en.json');
 
 // Setup Restify Server
 const server = restify.createServer();
