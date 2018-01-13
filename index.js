@@ -222,9 +222,10 @@ function sendMessage(recipientId, message) {
         if (error) {
             console.log('Error sending message: ' + response.error);
         }else{
-            console.log('send successful',error,response,body)
+            console.log('error send successful',error)
+            console.log('response send successful',response)
+            console.log('body send successful',body)
         }
-        response.sendStatus(200)
     });
 }
 
