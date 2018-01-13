@@ -118,7 +118,7 @@ function processMessage(res, event) {
         console.log('Received message from senderId: ' + senderId);
         console.log('Message is: ' + JSON.stringify(message));
         sendMessage(senderId, message.text)
-        res.sendStatus(200)
+
         // You may get a text or attachment but not both
         if (message.text) {
             let formattedMsg = message.text.toLowerCase().trim();
@@ -171,7 +171,11 @@ function processMessage(res, event) {
 
         } else if (message.attachments) {
             sendMessage(senderId, {text: 'Sorry, I don\'t understand your request.'});
+        }else{
+            res.sendStatus(404)
         }
+    }else{
+        res.sendStatus(404)
     }
 }
 
