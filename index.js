@@ -121,9 +121,9 @@ function processMessage(res, event) {
         // You may get a text or attachment but not both
         if (message.text) {
             let formattedMsg = message.text.toLowerCase().trim();
-            sendMessage(senderId, "try 1")
-            sendMessage(senderId, "try 2")
-            res.sendStatus(200);
+            sendMessage(res, senderId, "try 1")
+            sendMessage(res, senderId, "try 2")
+
             // let apiai = apiaiApp.textRequest(formattedMsg, {
             //     sessionId: 'tabby_cat'
             // });
@@ -169,8 +169,7 @@ function processMessage(res, event) {
             // Otherwise, search for new movie.
 
         } else if (message.attachments) {
-            sendMessage(senderId, {text: 'Sorry, I don\'t understand your request.'});
-            res.sendStatus(200)
+            sendMessage(res, senderId, {text: 'Sorry, I don\'t understand your request.'});
         }
     }
 }
@@ -209,7 +208,7 @@ function processMessage(res, event) {
 // }
 
 // sends message to user
-function sendMessage(recipientId, message) {
+function sendMessage(res, recipientId, message) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
@@ -221,6 +220,9 @@ function sendMessage(recipientId, message) {
     }, function (error, response, body) {
         if (error) {
             console.log('Error sending message: ' + response.error);
+            res.sendStatus(401)
+        }else{
+            res.sendStatus(200)
         }
     });
 }
