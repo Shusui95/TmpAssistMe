@@ -5,6 +5,7 @@ const builder = require('botbuilder');
 const server = require('express')();
 const apiairecognizer = require('api-ai-recognizer');
 const footballProvider = require('./providers/footballProvider');
+const request = require('request');
 
 server.use(bodyParser.urlencoded({extended: false}));
 server.use(bodyParser.json());
