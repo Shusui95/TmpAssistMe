@@ -87,7 +87,7 @@ function processMessage(event) {
                     console.log('fiiirst', response.result.action,response.result.action === 'input.unknown')
                     sendMessage(senderId, 'I didn\'t understand, if you need some help type just \'help\'')
                 }else{
-                    if(response.result.metadata.intentName === null){
+                    if(response.result.metadata.intentName === null || response.result.metadata.intentName === 'Default Welcome Intent'){
                         console.log("seeeecond", response.result.metadata.intentName)
                         sendMessage(senderId, response.result.fulfillment.speech)
                     }else{
