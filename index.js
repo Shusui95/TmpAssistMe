@@ -23,7 +23,7 @@ server.listen(process.env.port || process.env.PORT || config.defaultPort, () => 
 });
 
 // Server index page
-app.get("/", function (req, res) {
+server.get("/", function (req, res) {
     res.send("Deployed!");
 });
 
