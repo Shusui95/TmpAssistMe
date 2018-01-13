@@ -100,45 +100,45 @@ function processMessage(event) {
             let formattedMsg = message.text.toLowerCase().trim();
             sendMessage(senderId, "try 1")
             sendMessage(senderId, "try 2")
-            let apiai = apiaiApp.textRequest(formattedMsg, {
-                sessionId: 'tabby_cat'
-            });
-            apiai.on('response', (response) => {
-                console.log('focuuuuus', response);
-                sendMessage(senderId, "success")
-                if(response.result.action === 'input.unknown'){
-                    console.log('fiiirst', response.result.action,response.result.action === 'input.unknown')
-                    sendMessage(senderId, 'I didn\'t understand, if you need some help type just \'help\'')
-                }else{
-                    if(response.result.metadata.intentName === null || response.result.metadata.intentName === 'Default Welcome Intent'){
-                        console.log("seeeecond", response.result.metadata.intentName)
-                        sendMessage(senderId, "timeout ?")
-                        sendMessage(senderId, response.result.fulfillment.speech)
-                    }else{
-                        console.log("thiiiiird", response.result.metadata.intentName)
-                        sendMessage(senderId, "timeout why dont send message ?")
-                        bot.beginDialog(response.result.metadata.intentName)
-                    }
-                }
-                // hum
-                // response.result.action === 'input.unknown'
-                //      => response.result.metadata.intentId && intentName
-                // ok
-                // response.result.action === 'smalltalk.confirmation.yes'
-                //      => response.result.fulfillment.speech
-                //      => => response.result.metadata.intentId && intentName = null
-                // next events
-                //  response.result.action === 'france'
-                //  => => response.result.metadata.intentId && intentName = eventsToCome
-            });
-
-            apiai.on('error', (error) => {
-                console.log(error);
-                sendMessage(senderId, "error")
-                sendMessage(senderId, error)
-            });
-
-            apiai.end();
+            // let apiai = apiaiApp.textRequest(formattedMsg, {
+            //     sessionId: 'tabby_cat'
+            // });
+            // apiai.on('response', (response) => {
+            //     console.log('focuuuuus', response);
+            //     sendMessage(senderId, "success")
+            //     if(response.result.action === 'input.unknown'){
+            //         console.log('fiiirst', response.result.action,response.result.action === 'input.unknown')
+            //         sendMessage(senderId, 'I didn\'t understand, if you need some help type just \'help\'')
+            //     }else{
+            //         if(response.result.metadata.intentName === null || response.result.metadata.intentName === 'Default Welcome Intent'){
+            //             console.log("seeeecond", response.result.metadata.intentName)
+            //             sendMessage(senderId, "timeout ?")
+            //             sendMessage(senderId, response.result.fulfillment.speech)
+            //         }else{
+            //             console.log("thiiiiird", response.result.metadata.intentName)
+            //             sendMessage(senderId, "timeout why dont send message ?")
+            //             bot.beginDialog(response.result.metadata.intentName)
+            //         }
+            //     }
+            //     // hum
+            //     // response.result.action === 'input.unknown'
+            //     //      => response.result.metadata.intentId && intentName
+            //     // ok
+            //     // response.result.action === 'smalltalk.confirmation.yes'
+            //     //      => response.result.fulfillment.speech
+            //     //      => => response.result.metadata.intentId && intentName = null
+            //     // next events
+            //     //  response.result.action === 'france'
+            //     //  => => response.result.metadata.intentId && intentName = eventsToCome
+            // });
+            //
+            // apiai.on('error', (error) => {
+            //     console.log(error);
+            //     sendMessage(senderId, "error")
+            //     sendMessage(senderId, error)
+            // });
+            //
+            // apiai.end();
 
             // If we receive a text message, check to see if it matches any special
             // keywords and send back the corresponding movie detail.
