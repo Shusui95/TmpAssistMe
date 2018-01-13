@@ -37,7 +37,7 @@ server.get('/webhook', (req, res) => {
 });
 
 // All callbacks for Messenger will be POST-ed here
-app.post("/webhook", (req, res) => {
+server.post("/webhook", (req, res) => {
     // Make sure this is a page subscription
     if (req.body.object === "page") {
         // Iterate over each entry
@@ -54,7 +54,9 @@ app.post("/webhook", (req, res) => {
         });
         res.sendStatus(200);
     }else{
-        sendMessage(event.sender.id, "echo")
+        console.log('req',req.body)
+        res.sendStatus(200);
+
     }
 });
 
