@@ -84,11 +84,14 @@ function processMessage(event) {
             apiai.on('response', (response) => {
                 console.log('focuuuuus', response);
                 if(response.result.action === 'input.unknown'){
+                    console.log('fiiirst', response.result.action,response.result.action === 'input.unknown')
                     sendMessage(senderId, 'I didn\'t understand, if you need some help type just \'help\'')
                 }else{
                     if(response.result.metadata.intentName === null){
+                        console.log("seeeecond", response.result.metadata.intentName)
                         sendMessage(senderId, response.result.fulfillment.speech)
                     }else{
+                        console.log("thiiiiird", response.result.metadata.intentName)
                         bot.beginDialog(response.result.metadata.intentName)
                     }
                 }
