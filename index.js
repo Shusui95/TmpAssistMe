@@ -105,9 +105,6 @@ function processMessage(event) {
                 // next events
                 //  response.result.action === 'france'
                 //  => => response.result.metadata.intentId && intentName = eventsToCome
-                let aiText = response.result.fulfillment.speech;
-
-                sendMessage(senderId, {text: 'Sorry, I don\'t understand your request. sendToDialogFlow'});
             });
 
             apiai.on('error', (error) => {
