@@ -23,25 +23,37 @@ server.listen(process.env.port || process.env.PORT || config.defaultPort, () => 
     console.log('%s listening to %s', server.name, server.url);
 });
 
+/**
+ * Instanciate bot
+ * @type {UniversalBot}
+ */
+//const bot = new builder.UniversalBot();
+const FacebookBot = require('botbuilder-facebook');
+const bot = new FacebookBot({
+    pageToken: process.env.PAGE_ACCESS_TOKEN,
+    validationToken: process.env.VERIFICATION_TOKEN
+});
+
+
 // Server index page
-server.get("/", function (req, res) {
-    res.send("Deployed!");
+server.get('/', function (req, res) {
+    res.send('Deployed!');
 });
 
 server.get('/webhook', (req, res) => {
-    console.log("Verified webhook", req.query["hub.verify_token"],process.env.VERIFY_TOKEN, req.query["hub.challenge"]);
-    if (req.query["hub.verify_token"] === process.env.VERIFICATION_TOKEN) {
-        res.status(200).send(req.query["hub.challenge"]);
+    console.log('Verified webhook', req.query['hub.verify_token'], process.env.VERIFICATION_TOKEN, req.query['hub.challenge']);
+    if (req.query['hub.verify_token'] === process.env.VERIFICATION_TOKEN) {
+        res.status(200).send(req.query['hub.challenge']);
     } else {
-        res.status(403).send("Verification failed. The tokens do not match.");
+        res.status(403).send('Verification failed. The tokens do not match.');
     }
 });
 
 // All callbacks for Messenger will be POST-ed here
-server.post("/webhook", (req, res) => {
+server.post('/webhook', (req, res) => {
     // Make sure this is a page subscription
-    console.log('body', req.body)
-    if (req.body.object === "page") {
+    console.log('body', req.body);
+    if (req.body.object === 'page') {
         // Iterate over each entry
         // There may be multiple entries if batched
         req.body.entry.forEach((entry) => {
@@ -55,8 +67,8 @@ server.post("/webhook", (req, res) => {
             });
         });
         res.sendStatus(200);
-    }else{
-        console.log('req',req.body)
+    } else {
+        console.log('req', req.body);
         res.sendStatus(200);
 
     }
@@ -67,8 +79,8 @@ function processMessage(event) {
         let message = event.message;
         let senderId = event.sender.id;
 
-        console.log("Received message from senderId: " + senderId);
-        console.log("Message is: " + JSON.stringify(message));
+        console.log('Received message from senderId: ' + senderId);
+        console.log('Message is: ' + JSON.stringify(message));
 
         // You may get a text or attachment but not both
         if (message.text) {
@@ -77,13 +89,15 @@ function processMessage(event) {
             // If we receive a text message, check to see if it matches any special
             // keywords and send back the corresponding movie detail.
             // Otherwise, search for new movie.
-            bot.beginDialog('/', formattedMsg);
+            bot.botService.receive(formattedMsg);
+            res.sendStatus(200);
             //sendMessage(senderId, {text: "Sorry, I don't understand your request. sendToDialogFlow"})
         } else if (message.attachments) {
-            sendMessage(senderId, {text: "Sorry, I don't understand your request."});
+            sendMessage(senderId, {text: 'Sorry, I don\'t understand your request.'});
         }
     }
 }
+
 // function processPostback(event) {
 //     let senderId = event.sender.id;
 //     let payload = event.postback.payload;
@@ -120,26 +134,19 @@ function processMessage(event) {
 // sends message to user
 function sendMessage(recipientId, message) {
     request({
-        url: "https://graph.facebook.com/v2.6/me/messages",
+        url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
-        method: "POST",
+        method: 'POST',
         json: {
             recipient: {id: recipientId},
             message: message,
         }
-    }, function(error, response, body) {
+    }, function (error, response, body) {
         if (error) {
-            console.log("Error sending message: " + response.error);
+            console.log('Error sending message: ' + response.error);
         }
     });
 }
-
-
-/**
- * Instanciate bot
- * @type {UniversalBot}
- */
-const bot = new builder.UniversalBot();
 
 /**
  * Enable conversation data persistence
@@ -252,9 +259,9 @@ intents.matches('eventsToCome', [
         dialogs.askWhichNextEventDialog(session, args, next);
     },
     (session, args, next) => {
-        if(args.response.entity === 'Team'){
+        if (args.response.entity === 'Team') {
             session.beginDialog('globalNextTeamEvent');
-        }else{
+        } else {
             session.beginDialog('globalNextCompetitionEvent');
         }
     }
@@ -269,9 +276,9 @@ intents.matches('eventsPassed', [
         dialogs.askWhichLastEventDialog(session, args, next);
     },
     (session, args, next) => {
-        if(args.response.entity === 'Team'){
+        if (args.response.entity === 'Team') {
             session.beginDialog('globalLastTeamEvent');
-        }else{
+        } else {
             session.beginDialog('globalLastCompetitionEvent');
         }
     }
@@ -287,9 +294,9 @@ intents.matches('getDetails', [
         dialogs.askWhichGetDetailsDialog(session, args, next);
     },
     (session, args, next) => {
-        if(args.response.entity === 'Team'){
+        if (args.response.entity === 'Team') {
             session.beginDialog('globalGetTeamDetailEvent');
-        }else{
+        } else {
             session.beginDialog('globalGetPlayerDetailEvent');
         }
     }
