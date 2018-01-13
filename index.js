@@ -40,6 +40,7 @@ server.get('/webhook', (req, res) => {
 // All callbacks for Messenger will be POST-ed here
 server.post("/webhook", (req, res) => {
     // Make sure this is a page subscription
+    console.log('body', req.body)
     if (req.body.object === "page") {
         // Iterate over each entry
         // There may be multiple entries if batched
@@ -47,7 +48,7 @@ server.post("/webhook", (req, res) => {
             // Iterate over each messaging event
             entry.messaging.forEach((event) => {
                 if (event.postback) {
-                    processPostback(event);
+                    processMessage(event);
                 } else if (event.message) {
                     processMessage(event);
                 }
@@ -76,44 +77,45 @@ function processMessage(event) {
             // If we receive a text message, check to see if it matches any special
             // keywords and send back the corresponding movie detail.
             // Otherwise, search for new movie.
+            bot.beginDialog('/', formattedMsg);
             sendMessage(senderId, {text: "Sorry, I don't understand your request. sendToDialogFlow"})
         } else if (message.attachments) {
             sendMessage(senderId, {text: "Sorry, I don't understand your request."});
         }
     }
 }
-function processPostback(event) {
-    let senderId = event.sender.id;
-    let payload = event.postback.payload;
-
-    if (payload === "Greeting") {
-        // Get user's first name from the User Profile API
-        // and include it in the greeting
-        request({
-            url: "https://graph.facebook.com/v2.6/" + senderId,
-            qs: {
-                access_token: process.env.PAGE_ACCESS_TOKEN,
-                fields: "first_name"
-            },
-            method: "GET"
-        }, function(error, response, body) {
-            let greeting = "";
-            if (error) {
-                console.log("Error getting user's name: " +  error);
-            } else {
-                let bodyObj = JSON.parse(body);
-                name = bodyObj.first_name;
-                greeting = "Hi " + name + ". ";
-            }
-            let message = greeting + "My name is SP Movie Bot. I can tell you various details regarding movies. What movie would you like to know about?";
-            sendMessage(senderId, {text: message});
-        });
-    } else if (payload === "Correct") {
-        sendMessage(senderId, {text: "Awesome! What would you like to find out? Enter 'plot', 'date', 'runtime', 'director', 'cast' or 'rating' for the various details."});
-    } else if (payload === "Incorrect") {
-        sendMessage(senderId, {text: "Oops! Sorry about that. Try using the exact title of the movie"});
-    }
-}
+// function processPostback(event) {
+//     let senderId = event.sender.id;
+//     let payload = event.postback.payload;
+//
+//     if (payload === "Greeting") {
+//         // Get user's first name from the User Profile API
+//         // and include it in the greeting
+//         request({
+//             url: "https://graph.facebook.com/v2.6/" + senderId,
+//             qs: {
+//                 access_token: process.env.PAGE_ACCESS_TOKEN,
+//                 fields: "first_name"
+//             },
+//             method: "GET"
+//         }, function(error, response, body) {
+//             let greeting = "";
+//             if (error) {
+//                 console.log("Error getting user's name: " +  error);
+//             } else {
+//                 let bodyObj = JSON.parse(body);
+//                 name = bodyObj.first_name;
+//                 greeting = "Hi " + name + ". ";
+//             }
+//             let message = greeting + "My name is SP Movie Bot. I can tell you various details regarding movies. What movie would you like to know about?";
+//             sendMessage(senderId, {text: message});
+//         });
+//     } else if (payload === "Correct") {
+//         sendMessage(senderId, {text: "Awesome! What would you like to find out? Enter 'plot', 'date', 'runtime', 'director', 'cast' or 'rating' for the various details."});
+//     } else if (payload === "Incorrect") {
+//         sendMessage(senderId, {text: "Oops! Sorry about that. Try using the exact title of the movie"});
+//     }
+// }
 
 // sends message to user
 function sendMessage(recipientId, message) {
