@@ -98,11 +98,11 @@ function processMessage(event) {
         // You may get a text or attachment but not both
         if (message.text) {
             let formattedMsg = message.text.toLowerCase().trim();
+            sendMessage(senderId, "try 1")
+            sendMessage(senderId, "try 2")
             let apiai = apiaiApp.textRequest(formattedMsg, {
                 sessionId: 'tabby_cat'
             });
-            sendMessage(senderId, "try 1")
-            sendMessage(senderId, "try 2")
             apiai.on('response', (response) => {
                 console.log('focuuuuus', response);
                 sendMessage(senderId, "success")
