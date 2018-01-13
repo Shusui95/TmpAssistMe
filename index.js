@@ -220,10 +220,10 @@ function sendMessage(recipientId, message) {
         }
     }, function (error, response, body) {
         if (error) {
-            console.log('Error sending message: ' + response.error);
-        }else{
             console.log('error send successful',error)
+        }else if(response){
             console.log('response send successful',response)
+        }else{
             console.log('body send successful',body)
         }
     });
