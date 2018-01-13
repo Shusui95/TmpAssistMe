@@ -123,7 +123,7 @@ function processMessage(event) {
             let formattedMsg = message.text.toLowerCase().trim();
             sendMessage(senderId, "try 1")
             sendMessage(senderId, "try 2")
-            res.sendStatus(200)
+           
             // let apiai = apiaiApp.textRequest(formattedMsg, {
             //     sessionId: 'tabby_cat'
             // });
