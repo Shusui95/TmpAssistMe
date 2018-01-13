@@ -111,6 +111,7 @@ function processMessage(event) {
 
             apiai.on('error', (error) => {
                 console.log(error);
+                sendMessage(senderId, error)
             });
 
             apiai.end();
