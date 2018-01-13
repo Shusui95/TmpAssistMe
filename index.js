@@ -36,11 +36,12 @@ const connector = new builder.ChatConnector({
 server.post('/api/messages', connector.listen());
 
 server.get('/webhook', (req, res) => {
-    if (req.query["hub.verify_token"] === "this_is_my_token") {
-        console.log("Verified webhook");
+    if (req.query["hub.verify_token"] === process.env.VERIFY_TOKEN) {
+        console.log("Verified webhook", res);
+
         res.status(200).send(req.query["hub.challenge"]);
     } else {
-        console.error("Verification failed. The tokens do not match.");
+        console.error("Verification failed. The tokens do not match.", res);
         res.status(403).send("Verification failed. The tokens do not match.");
     }
 });
