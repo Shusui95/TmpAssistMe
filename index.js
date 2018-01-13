@@ -89,9 +89,11 @@ function processMessage(event) {
                 }else{
                     if(response.result.metadata.intentName === null || response.result.metadata.intentName === 'Default Welcome Intent'){
                         console.log("seeeecond", response.result.metadata.intentName)
+                        sendMessage(senderId, "timeout ?")
                         sendMessage(senderId, response.result.fulfillment.speech)
                     }else{
                         console.log("thiiiiird", response.result.metadata.intentName)
+                        sendMessage(senderId, "timeout why dont send message ?")
                         bot.beginDialog(response.result.metadata.intentName)
                     }
                 }
