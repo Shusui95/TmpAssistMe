@@ -22,6 +22,11 @@ server.listen(process.env.port || process.env.PORT || config.defaultPort, () => 
     console.log('%s listening to %s', server.name, server.url);
 });
 
+// Server index page
+app.get("/", function (req, res) {
+    res.send("Deployed!");
+});
+
 server.get('/webhook', (req, res) => {
     if (req.query["hub.verify_token"] === process.env.VERIFY_TOKEN) {
         console.log("Verified webhook", req.query["hub.verify_token"], req.query["hub.challenge"]);
