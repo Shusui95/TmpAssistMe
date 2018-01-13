@@ -2,21 +2,12 @@ const config = require('./config/config');
 const dialogs = require('./dialogs/dialog');
 const bodyParser = require('body-parser');
 const builder = require('botbuilder');
-const FacebookBot = require('botbuilder-facebook');
 const server = require('express')();
 const apiairecognizer = require('api-ai-recognizer');
 const footballProvider = require('./providers/footballProvider');
 
-const bot = new FacebookBot({
-    pageToken: process.env.PAGE_ACCESS_TOKEN,
-    validationToken: process.env.VERIFICATION_TOKEN
-});
-
+app.use(bodyParser.urlencoded({extended: false}))
 server.use(bodyParser.json());
-
-bot.add('/', session => {
-    session.send('Hello!');
-});
 
 /**
  *  API.AI supports nearly 15 languages, but as the caution says:
@@ -24,8 +15,6 @@ bot.add('/', session => {
  *  Language cannot be changed after creation of the agent.
  *  The NodeJS client doesn't permit this for now
  */
-// const frMessages = require('./lang/fr.json');
-// const enMessages = require('./lang/en.json');
 
 // Setup Restify Server
 //const server = restify.createServer();
@@ -33,38 +22,22 @@ server.listen(process.env.port || process.env.PORT || config.defaultPort, () => 
     console.log('%s listening to %s', server.name, server.url);
 });
 
-/**
- *  Create connector
- * @type {ChatConnector}
- */
-const connector = new builder.ChatConnector({
-    appId: process.env.APP_ID,
-    appPassword: process.env.APP_SECRET
-});
-
-
-/**
- * Open an url
- */
-server.post('/api/messages', connector.listen());
-
 server.get('/webhook', (req, res) => {
-    bot.botService.validate(req.query, function(err, challenge) {
-        if (err) {
-            console.error(err);
-            res.send('Error, validation failed');
-            return;
-        }
-        console.log('validation successful');
-        res.send(200, challenge);
-    });
+    if (req.query["hub.verify_token"] === process.env.VERIFY_TOKEN) {
+        console.log("Verified webhook", req.query["hub.verify_token"], req.query["hub.challenge"]);
+
+        res.send(200, req.query["hub.challenge"]);
+    } else {
+        console.error("Verification failed. The tokens do not match.", res);
+        res.send(403, "Verification failed. The tokens do not match.");
+    }
 });
 
 /**
  * Instanciate bot
  * @type {UniversalBot}
  */
-//const bot = new builder.UniversalBot(connector);
+const bot = new builder.UniversalBot();
 
 /**
  * Enable conversation data persistence
