@@ -78,7 +78,7 @@ function processMessage(event) {
             // keywords and send back the corresponding movie detail.
             // Otherwise, search for new movie.
             bot.beginDialog('/', formattedMsg);
-            sendMessage(senderId, {text: "Sorry, I don't understand your request. sendToDialogFlow"})
+            //sendMessage(senderId, {text: "Sorry, I don't understand your request. sendToDialogFlow"})
         } else if (message.attachments) {
             sendMessage(senderId, {text: "Sorry, I don't understand your request."});
         }
