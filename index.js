@@ -83,6 +83,25 @@ function processMessage(event) {
 
             apiai.on('response', (response) => {
                 console.log('focuuuuus', response);
+                if(response.result.action === 'input.unknown'){
+                    sendMessage(senderId, 'I didn\'t understand, if you need some help type just \'help\'')
+                }else{
+                    if(response.result.metadata.intentName === null){
+                        sendMessage(senderId, response.result.fulfillment.speech)
+                    }else{
+                        bot.beginDialog(response.result.metadata.intentName)
+                    }
+                }
+                // hum
+                // response.result.action === 'input.unknown'
+                //      => response.result.metadata.intentId && intentName
+                // ok
+                // response.result.action === 'smalltalk.confirmation.yes'
+                //      => response.result.fulfillment.speech
+                //      => => response.result.metadata.intentId && intentName = null
+                // next events
+                //  response.result.action === 'france'
+                //  => => response.result.metadata.intentId && intentName = eventsToCome
                 let aiText = response.result.fulfillment.speech;
 
                 sendMessage(senderId, {text: 'Sorry, I don\'t understand your request. sendToDialogFlow'});
@@ -266,7 +285,7 @@ intents.onDefault((session, args) => {
     session.endDialog('I didn\'t understand, if you need some help type just \'help\'');
 });
 
-intents.matches('eventsToCome', [
+bot.dialog('eventsToCome', [
     (session, args, next) => {
         dialogs.askWhichNextEventDialog(session, args, next);
     },
