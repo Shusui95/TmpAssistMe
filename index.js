@@ -458,8 +458,8 @@ class FacebookBot {
                     console.log('facebookResponseData', facebookResponseData)
                     this.doDataResponse(sender, facebookResponseData);
                 } else if(this.isDefined(response.result.metadata.intentName)){
-                    console.log("tryyyyyyyyyy")
-                    bot.beginDialog('help')
+                    console.log("tryyyyyyyyyy", response.result)
+                    this.doDataResponse(sender, response.result.metadata.intentName);
                 } else if (this.isDefined(responseMessages) && responseMessages.length > 0) {
                     console.log('responseMessages', responseMessages)
                     this.doRichContentResponse(sender, responseMessages);
