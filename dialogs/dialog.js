@@ -3,6 +3,7 @@ const footballProvider = require('../providers/footballProvider');
 
 const dialogs = {
     helloWorldDialog: (session) => {
+        console.log('sessssion', session)
         session.send('hello');
         session.endDialog();
     },
