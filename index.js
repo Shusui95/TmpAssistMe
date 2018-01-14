@@ -522,7 +522,7 @@ server.get('/', function (req, res) {
         appId: process.env.APP_ID,
         appPassword: process.env.APP_SECRET
     })
-});
+}); 
 
 
 /**
