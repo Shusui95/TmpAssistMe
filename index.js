@@ -136,6 +136,7 @@ function processMessage(res, event) {
         if (message.text) {
             let formattedMsg = message.text.toLowerCase().trim();
             sendMessage(senderId, "ok man")
+            res.status(200);
 
             // let apiai = apiaiApp.textRequest(formattedMsg, {
             //     sessionId: 'tabby_cat'
