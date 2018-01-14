@@ -95,10 +95,12 @@ server.post('/webhook', (req, res) => {
                 console.log('eveeeeent', event)
                 console.log('eveeeeent delivery', event.delivery)
                 console.log('eveeeeent echo', event.message.is_echo)
-                console.log('eveeeeent cond if', event.delivery !== null)
+                console.log('eveeeeent cond if', event.delivery != null)
+                console.log('eveeeeent cond if', event.delivery !== undefined)
+                console.log('eveeeeent cond if', typeof event.delivery !== 'undefined')
                 console.log('eveeeeent condif ', event.message.is_echo !== null && event.message.is_echo)
                 console.log('eveeeeent condif ', event.delivery !== null || (event.message.is_echo !== null && event.message.is_echo))
-                if(event.delivery !== null || (event.message.is_echo !== null && event.message.is_echo)){
+                if(typeof event.delivery !== undefined || (event.message.is_echo !== null && event.message.is_echo)){
                     res.sendStatus(200);
                 }else{
                     // if (event.postback) {
