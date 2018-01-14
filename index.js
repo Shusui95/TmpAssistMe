@@ -459,10 +459,10 @@ class FacebookBot {
                     this.doDataResponse(sender, facebookResponseData);
                 } else if(this.isDefined(response.result.metadata.intentName)){
                     console.log("tryyyyyyyyyy", response.result)
-                    this.doRichContentResponse(sender, JSON.stringify(response.result.metadata.intentName)+' '+JSON.stringify(response.result.fulfillment.messages));
+                    this.doTextResponse(sender, JSON.stringify(response.result.metadata.intentName)+' '+JSON.stringify(response.result.fulfillment.messages));
                 } else if (this.isDefined(responseMessages) && responseMessages.length > 0) {
                     console.log('responseMessages', responseMessages)
-                    this.doTextResponse(sender, responseMessages);
+                    this.doRichContentResponse(sender, responseMessages);
                 }
                 else if (this.isDefined(responseText)) {
                     console.log('responseText', responseText)
