@@ -7,6 +7,7 @@ const uuid = require('uuid');
 const request = require('request');
 const JSONbig = require('json-bigint');
 const async = require('async');
+const apiai = require('apiai');
 const apiairecognizer = require('api-ai-recognizer');
 const footballProvider = require('./providers/footballProvider');
 
@@ -522,7 +523,7 @@ server.get('/', function (req, res) {
         appId: process.env.APP_ID,
         appPassword: process.env.APP_SECRET
     })
-}); 
+});
 
 
 /**
