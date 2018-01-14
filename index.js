@@ -28,6 +28,109 @@ const FACEBOOK_WELCOME = "FACEBOOK_WELCOME";
  *  The NodeJS client doesn't permit this for now
  */
 
+/**
+ * Instanciate bot
+ * @type {UniversalBot}
+ */
+const bot = new builder.UniversalBot(connector);
+/**
+ * Enable conversation data persistence
+ */
+bot.set('persistConversationData', true);
+
+/**
+ * Instanciate api.ai (recently DialogFlow)
+ * @type {ApiAiRecognizer}
+ */
+const recognizer = new apiairecognizer(config.apiaiApp);
+/**
+ * Instanciate defined intents
+ * @type {IntentDialog}
+ */
+const intents = new builder.IntentDialog({
+    recognizers: [recognizer]
+});
+
+const cancelConversation = {
+    matches: /^cancel$|^goodbye$|^skip$|^stop$/i,
+    confirmPrompt: 'This will cancel your request. Are you sure?'
+};
+const startOverConversation = {
+    matches: /^start over$/i
+};
+
+/**
+ * Entry point
+ */
+bot.dialog('/', intents);
+bot.dialog('globalNextTeamEvent', [
+    (session, args, next) => {
+        dialogs.askTeamNextEventDialog(session, args, next);
+    },
+    (session, results, next) => {
+        dialogs.searchTeamByNameDialog(session, results, next);
+    },
+    (session, results, next) => {
+        dialogs.next5EventsByTeamIdDialog(session, results, next);
+    }
+]);
+bot.dialog('globalLastTeamEvent', [
+    (session, args, next) => {
+        dialogs.askTeamLastEventDialog(session, args, next);
+    },
+    (session, results, next) => {
+        dialogs.searchTeamByNameDialog(session, results, next);
+    },
+    (session, results, next) => {
+        dialogs.last5EventsByTeamIdDialog(session, results, next);
+    }
+]);
+bot.dialog('globalNextCompetitionEvent', [
+    (session, args, next) => {
+        dialogs.askCountryCompetitionDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.askLeagueByCountryNameDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.next15EventsByLeagueIdDialog(session, args, next);
+    },
+]);
+bot.dialog('globalLastCompetitionEvent', [
+    (session, args, next) => {
+        dialogs.askCountryCompetitionDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.askLeagueByCountryNameDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.last15EventsByLeagueIdDialog(session, args, next);
+    },
+]);
+bot.dialog('globalGetTeamDetailEvent', [
+    (session, args, next) => {
+        dialogs.askTeamDetailsDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.searchTeamByNameDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.getDetailsByTeamIdDialog(session, args, next);
+    },
+]);
+bot.dialog('globalGetPlayerDetailEvent', [
+    (session, args, next) => {
+        dialogs.askPlayerDetailsDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.searchPlayerByNameDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.getDetailsByPlayerIdDialog(session, args, next);
+    },
+]);
+
+
 class FacebookBot {
     constructor() {
         this.apiAiService = apiai(APIAI_ACCESS_TOKEN, {language: APIAI_LANG, requestSource: "fb"});
@@ -674,107 +777,6 @@ server.post('/ai', (req, res) => {
     }
 });
 
-/**
- * Instanciate bot
- * @type {UniversalBot}
- */
-const bot = new builder.UniversalBot(connector);
-/**
- * Enable conversation data persistence
- */
-bot.set('persistConversationData', true);
-
-/**
- * Instanciate api.ai (recently DialogFlow)
- * @type {ApiAiRecognizer}
- */
-const recognizer = new apiairecognizer(config.apiaiApp);
-/**
- * Instanciate defined intents
- * @type {IntentDialog}
- */
-const intents = new builder.IntentDialog({
-    recognizers: [recognizer]
-});
-
-const cancelConversation = {
-    matches: /^cancel$|^goodbye$|^skip$|^stop$/i,
-    confirmPrompt: 'This will cancel your request. Are you sure?'
-};
-const startOverConversation = {
-    matches: /^start over$/i
-};
-
-/**
- * Entry point
- */
-bot.dialog('/', intents);
-bot.dialog('globalNextTeamEvent', [
-    (session, args, next) => {
-        dialogs.askTeamNextEventDialog(session, args, next);
-    },
-    (session, results, next) => {
-        dialogs.searchTeamByNameDialog(session, results, next);
-    },
-    (session, results, next) => {
-        dialogs.next5EventsByTeamIdDialog(session, results, next);
-    }
-]);
-bot.dialog('globalLastTeamEvent', [
-    (session, args, next) => {
-        dialogs.askTeamLastEventDialog(session, args, next);
-    },
-    (session, results, next) => {
-        dialogs.searchTeamByNameDialog(session, results, next);
-    },
-    (session, results, next) => {
-        dialogs.last5EventsByTeamIdDialog(session, results, next);
-    }
-]);
-bot.dialog('globalNextCompetitionEvent', [
-    (session, args, next) => {
-        dialogs.askCountryCompetitionDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.askLeagueByCountryNameDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.next15EventsByLeagueIdDialog(session, args, next);
-    },
-]);
-bot.dialog('globalLastCompetitionEvent', [
-    (session, args, next) => {
-        dialogs.askCountryCompetitionDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.askLeagueByCountryNameDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.last15EventsByLeagueIdDialog(session, args, next);
-    },
-]);
-bot.dialog('globalGetTeamDetailEvent', [
-    (session, args, next) => {
-        dialogs.askTeamDetailsDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.searchTeamByNameDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.getDetailsByTeamIdDialog(session, args, next);
-    },
-]);
-bot.dialog('globalGetPlayerDetailEvent', [
-    (session, args, next) => {
-        dialogs.askPlayerDetailsDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.searchPlayerByNameDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.getDetailsByPlayerIdDialog(session, args, next);
-    },
-]);
 
 /**
  *  Default intent
