@@ -95,7 +95,7 @@ server.post('/webhook', (req, res) => {
                 console.log('eveeeeent', event)
                 console.log('eveeeeent delivery', event.delivery)
                 console.log('eveeeeent echo', event.message.is_echo)
-                if(event.delivery !== null || event.message.is_echo){
+                if(event.delivery !== null || (event.message.is_echo !== null && event.message.is_echo)){
                     res.sendStatus(200);
                 }else{
                     if (event.postback) {
@@ -119,7 +119,7 @@ server.post('/webhook', (req, res) => {
 });
 
 function processMessage(res, event) {
-    if (!event.message.is_echo) {
+    if (event.delivery !== null || (event.message.is_echo !== null && event.message.is_echo)) {
         let message = event.message;
         let senderId = event.sender.id;
 
