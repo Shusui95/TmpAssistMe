@@ -94,8 +94,8 @@ server.post('/webhook', (req, res) => {
             entry.messaging.forEach((event) => {
                 console.log('eveeeeent', event)
                 console.log('eveeeeent delivery', event.delivery)
-                console.log('eveeeeent delivery', event.message.is_echo)
-                if(event.delivery || event.message.is_echo){
+                console.log('eveeeeent echo', event.message.is_echo)
+                if(event.delivery !== null || event.message.is_echo){
                     res.sendStatus(200);
                 }else{
                     if (event.postback) {
