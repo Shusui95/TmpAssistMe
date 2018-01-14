@@ -93,6 +93,8 @@ server.post('/webhook', (req, res) => {
             console.log('messaging', entry.messaging);
             entry.messaging.forEach((event) => {
                 console.log('eveeeeent', event)
+                console.log('eveeeeent delivery', event.delivery)
+                console.log('eveeeeent delivery', event.message.is_echo)
                 if(event.delivery || event.message.is_echo){
                     res.sendStatus(200);
                 }else{
@@ -102,6 +104,8 @@ server.post('/webhook', (req, res) => {
                     } else if (event.message) {
                         processMessage(res, event);
 
+                    }else{
+                        res.sendStatus(200);
                     }
                 }
             });
@@ -121,7 +125,6 @@ function processMessage(res, event) {
 
         console.log('Received message from senderId: ' + senderId);
         console.log('Message is: ' + JSON.stringify(message));
-        sendMessage(senderId, message.text)
 
         // You may get a text or attachment but not both
         if (message.text) {
@@ -173,12 +176,12 @@ function processMessage(res, event) {
             // Otherwise, search for new movie.
 
         } else if (message.attachments) {
-            sendMessage(senderId, {text: 'Sorry, I don\'t understand your request.'});
+            sendMessage(senderId, 'Sorry, I don\'t understand your request.');
         }else{
-            res.sendStatus(404)
+            res.sendStatus(200)
         }
     }else{
-        res.sendStatus(404)
+        res.sendStatus(200)
     }
 }
 
