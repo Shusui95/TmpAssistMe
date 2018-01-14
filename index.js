@@ -100,7 +100,7 @@ server.post('/webhook', (req, res) => {
                 console.log('eveeeeent cond if', typeof event.delivery !== 'undefined')
                 console.log('eveeeeent condif ', event.message.is_echo !== null && event.message.is_echo)
                 console.log('eveeeeent condif ', event.delivery !== null || (event.message.is_echo !== null && event.message.is_echo))
-                if(typeof event.delivery !== undefined || (event.message.is_echo !== null && event.message.is_echo)){
+                if(typeof event.delivery !== 'undefined' || (event.message.is_echo !== null && event.message.is_echo)){
                     res.sendStatus(200);
                 }else{
                     // if (event.postback) {
