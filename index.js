@@ -7,7 +7,6 @@ const uuid = require('uuid');
 const request = require('request');
 const JSONbig = require('json-bigint');
 const async = require('async');
-const apiai = require('apiai');
 const apiairecognizer = require('api-ai-recognizer');
 const footballProvider = require('./providers/footballProvider');
 
@@ -27,118 +26,6 @@ const FACEBOOK_WELCOME = "FACEBOOK_WELCOME";
  *  Language cannot be changed after creation of the agent.
  *  The NodeJS client doesn't permit this for now
  */
-
-
-/**
- *  Create connector
- * @type {ChatConnector}
- */
-const connector = new builder.ChatConnector({
-    appId: process.env.APP_ID,
-    appPassword: process.env.APP_SECRET
-});
-/**
- * Instanciate bot
- * @type {UniversalBot}
- */
-const bot = new builder.UniversalBot(connector);
-/**
- * Enable conversation data persistence
- */
-bot.set('persistConversationData', true);
-
-/**
- * Instanciate api.ai (recently DialogFlow)
- * @type {ApiAiRecognizer}
- */
-const recognizer = new apiairecognizer(config.apiaiApp);
-/**
- * Instanciate defined intents
- * @type {IntentDialog}
- */
-const intents = new builder.IntentDialog({
-    recognizers: [recognizer]
-});
-
-const cancelConversation = {
-    matches: /^cancel$|^goodbye$|^skip$|^stop$/i,
-    confirmPrompt: 'This will cancel your request. Are you sure?'
-};
-const startOverConversation = {
-    matches: /^start over$/i
-};
-
-/**
- * Entry point
- */
-bot.dialog('/', intents);
-bot.dialog('globalNextTeamEvent', [
-    (session, args, next) => {
-        dialogs.askTeamNextEventDialog(session, args, next);
-    },
-    (session, results, next) => {
-        dialogs.searchTeamByNameDialog(session, results, next);
-    },
-    (session, results, next) => {
-        dialogs.next5EventsByTeamIdDialog(session, results, next);
-    }
-]);
-bot.dialog('globalLastTeamEvent', [
-    (session, args, next) => {
-        dialogs.askTeamLastEventDialog(session, args, next);
-    },
-    (session, results, next) => {
-        dialogs.searchTeamByNameDialog(session, results, next);
-    },
-    (session, results, next) => {
-        dialogs.last5EventsByTeamIdDialog(session, results, next);
-    }
-]);
-bot.dialog('globalNextCompetitionEvent', [
-    (session, args, next) => {
-        dialogs.askCountryCompetitionDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.askLeagueByCountryNameDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.next15EventsByLeagueIdDialog(session, args, next);
-    },
-]);
-bot.dialog('globalLastCompetitionEvent', [
-    (session, args, next) => {
-        dialogs.askCountryCompetitionDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.askLeagueByCountryNameDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.last15EventsByLeagueIdDialog(session, args, next);
-    },
-]);
-bot.dialog('globalGetTeamDetailEvent', [
-    (session, args, next) => {
-        dialogs.askTeamDetailsDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.searchTeamByNameDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.getDetailsByTeamIdDialog(session, args, next);
-    },
-]);
-bot.dialog('globalGetPlayerDetailEvent', [
-    (session, args, next) => {
-        dialogs.askPlayerDetailsDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.searchPlayerByNameDialog(session, args, next);
-    },
-    (session, args, next) => {
-        dialogs.getDetailsByPlayerIdDialog(session, args, next);
-    },
-]);
-
 
 class FacebookBot {
     constructor() {
@@ -439,8 +326,8 @@ class FacebookBot {
 
     doApiAiRequest(apiaiRequest, sender) {
         apiaiRequest.on('response', (response) => {
-            console.log('doApiAiRequest',response.result.metadata.intentName)
-            console.log('doApiAiRequest', this.isDefined(response.result.metadata.intentName))
+            console.log('doApiAiRequest',esponse.result.metadata.intentName)
+            console.log('doApiAiRequest', this.isDefined(esponse.result.metadata.intentName))
 
             if (this.isDefined(response.result) && this.isDefined(response.result.fulfillment)) {
                 let responseData = response.result.fulfillment.data;
@@ -458,8 +345,8 @@ class FacebookBot {
                     console.log('facebookResponseData', facebookResponseData)
                     this.doDataResponse(sender, facebookResponseData);
                 } else if(this.isDefined(response.result.metadata.intentName)){
-                    console.log("tryyyyyyyyyy", response.result)
-                    this.doTextResponse(sender, JSON.stringify(response.result.metadata.intentName)+' '+JSON.stringify(response.result.fulfillment.messages));
+                    console.log("tryyyyyyyyyy")
+                    bot.beginDialog('help')
                 } else if (this.isDefined(responseMessages) && responseMessages.length > 0) {
                     console.log('responseMessages', responseMessages)
                     this.doRichContentResponse(sender, responseMessages);
@@ -637,145 +524,131 @@ server.get('/', function (req, res) {
     })
 });
 
-server.get('/api/messages', (req, res) => {
-    if (req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {
-        res.send(req.query['hub.challenge']);
 
-        setTimeout(() => {
-            facebookBot.doSubscribeRequest();
-        }, 3000);
+/**
+ *  Create connector
+ * @type {ChatConnector}
+ */
+const connector = new builder.ChatConnector({
+    appId: process.env.APP_ID,
+    appPassword: process.env.APP_SECRET
+});
+
+server.get('/api/messages', (req, res) => {
+    if (req.query['hub.verify_token'] === process.env.VERIFICATION_TOKEN) {
+        res.status(200).send(req.query['hub.challenge']);
     } else {
-        res.send('Error, wrong validation token');
+        res.status(403).send('Verification failed. The tokens do not match.');
     }
 });
 
 /**
  * Open an url
  */
-// server.post('/api/messages', connector.listen());
-// server.post('/ai', connector.listen());
+server.post('/api/messages', connector.listen());
+server.post('/ai', connector.listen());
 
-server.post('/api/messages', (req, res) => {
-    try {
-        const data = JSONbig.parse(req.body);
+/**
+ * Instanciate bot
+ * @type {UniversalBot}
+ */
+const bot = new builder.UniversalBot(connector);
+/**
+ * Enable conversation data persistence
+ */
+bot.set('persistConversationData', true);
 
-        if (data.entry) {
-            let entries = data.entry;
-            entries.forEach((entry) => {
-                console.log('entry webhook', entry)
-                let messaging_events = entry.messaging;
-                if (messaging_events) {
-                    messaging_events.forEach((event) => {
-                        if (event.message && !event.message.is_echo) {
-
-                            if (event.message.attachments) {
-                                let locations = event.message.attachments.filter(a => a.type === "location");
-
-                                // delete all locations from original message
-                                event.message.attachments = event.message.attachments.filter(a => a.type !== "location");
-
-                                if (locations.length > 0) {
-                                    locations.forEach(l => {
-                                        let locationEvent = {
-                                            sender: event.sender,
-                                            postback: {
-                                                payload: "FACEBOOK_LOCATION",
-                                                data: l.payload.coordinates
-                                            }
-                                        };
-                                        console.log("processs webhook event 1", locationEvent)
-                                        facebookBot.processFacebookEvent(locationEvent);
-                                    });
-                                }
-                            }
-                            console.log("processs webhook event 2", event)
-                            facebookBot.processMessageEvent(event);
-                        } else if (event.postback && event.postback.payload) {
-                            if (event.postback.payload === "FACEBOOK_WELCOME") {
-                                console.log("processs webhook event 3", event)
-                                facebookBot.processFacebookEvent(event);
-                            } else {
-                                console.log("processs webhook event 4", event)
-                                facebookBot.processMessageEvent(event);
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-        return res.status(200).json({
-            status: "ok"
-        });
-    } catch (err) {
-        console.log('errrr', err)
-        return res.status(400).json({
-            status: "error",
-            error: err
-        });
-    }
-});
-server.post('/ai', (req, res) => {
-    try {
-        const data = JSONbig.parse(req.body);
-
-        if (data.entry) {
-            let entries = data.entry;
-            entries.forEach((entry) => {
-                console.log('entry webhook', entry)
-                let messaging_events = entry.messaging;
-                if (messaging_events) {
-                    messaging_events.forEach((event) => {
-                        if (event.message && !event.message.is_echo) {
-
-                            if (event.message.attachments) {
-                                let locations = event.message.attachments.filter(a => a.type === "location");
-
-                                // delete all locations from original message
-                                event.message.attachments = event.message.attachments.filter(a => a.type !== "location");
-
-                                if (locations.length > 0) {
-                                    locations.forEach(l => {
-                                        let locationEvent = {
-                                            sender: event.sender,
-                                            postback: {
-                                                payload: "FACEBOOK_LOCATION",
-                                                data: l.payload.coordinates
-                                            }
-                                        };
-                                        console.log("processs webhook event 1", locationEvent)
-                                        facebookBot.processFacebookEvent(locationEvent);
-                                    });
-                                }
-                            }
-                            console.log("processs webhook event 2", event)
-                            facebookBot.processMessageEvent(event);
-                        } else if (event.postback && event.postback.payload) {
-                            if (event.postback.payload === "FACEBOOK_WELCOME") {
-                                console.log("processs webhook event 3", event)
-                                facebookBot.processFacebookEvent(event);
-                            } else {
-                                console.log("processs webhook event 4", event)
-                                facebookBot.processMessageEvent(event);
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-        return res.status(200).json({
-            status: "ok"
-        });
-    } catch (err) {
-        console.log('errrr', err)
-        return res.status(400).json({
-            status: "error",
-            error: err
-        });
-    }
+/**
+ * Instanciate api.ai (recently DialogFlow)
+ * @type {ApiAiRecognizer}
+ */
+const recognizer = new apiairecognizer(config.apiaiApp);
+/**
+ * Instanciate defined intents
+ * @type {IntentDialog}
+ */
+const intents = new builder.IntentDialog({
+    recognizers: [recognizer]
 });
 
+const cancelConversation = {
+    matches: /^cancel$|^goodbye$|^skip$|^stop$/i,
+    confirmPrompt: 'This will cancel your request. Are you sure?'
+};
+const startOverConversation = {
+    matches: /^start over$/i
+};
+
+/**
+ * Entry point
+ */
+bot.dialog('/', intents);
+bot.dialog('globalNextTeamEvent', [
+    (session, args, next) => {
+        dialogs.askTeamNextEventDialog(session, args, next);
+    },
+    (session, results, next) => {
+        dialogs.searchTeamByNameDialog(session, results, next);
+    },
+    (session, results, next) => {
+        dialogs.next5EventsByTeamIdDialog(session, results, next);
+    }
+]);
+bot.dialog('globalLastTeamEvent', [
+    (session, args, next) => {
+        dialogs.askTeamLastEventDialog(session, args, next);
+    },
+    (session, results, next) => {
+        dialogs.searchTeamByNameDialog(session, results, next);
+    },
+    (session, results, next) => {
+        dialogs.last5EventsByTeamIdDialog(session, results, next);
+    }
+]);
+bot.dialog('globalNextCompetitionEvent', [
+    (session, args, next) => {
+        dialogs.askCountryCompetitionDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.askLeagueByCountryNameDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.next15EventsByLeagueIdDialog(session, args, next);
+    },
+]);
+bot.dialog('globalLastCompetitionEvent', [
+    (session, args, next) => {
+        dialogs.askCountryCompetitionDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.askLeagueByCountryNameDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.last15EventsByLeagueIdDialog(session, args, next);
+    },
+]);
+bot.dialog('globalGetTeamDetailEvent', [
+    (session, args, next) => {
+        dialogs.askTeamDetailsDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.searchTeamByNameDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.getDetailsByTeamIdDialog(session, args, next);
+    },
+]);
+bot.dialog('globalGetPlayerDetailEvent', [
+    (session, args, next) => {
+        dialogs.askPlayerDetailsDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.searchPlayerByNameDialog(session, args, next);
+    },
+    (session, args, next) => {
+        dialogs.getDetailsByPlayerIdDialog(session, args, next);
+    },
+]);
 
 /**
  *  Default intent
