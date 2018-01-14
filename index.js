@@ -4,6 +4,7 @@ const footballProvider = require('./providers/footballProvider');
 const apiairecognizer = require('api-ai-recognizer');
 const apiai = require('apiai');
 const express = require('express');
+const builder = require('botbuilder');
 const bodyParser = require('body-parser');
 const uuid = require('uuid');
 const request = require('request');
@@ -20,6 +21,9 @@ const FB_TEXT_LIMIT = 640;
 
 const FACEBOOK_LOCATION = "FACEBOOK_LOCATION";
 const FACEBOOK_WELCOME = "FACEBOOK_WELCOME";
+
+const bot = builder.UniversalBot();
+
 
 class FacebookBot {
     constructor() {
@@ -320,18 +324,27 @@ class FacebookBot {
 
     doApiAiRequest(apiaiRequest, sender) {
         apiaiRequest.on('response', (response) => {
-            console.log('doApiAiRequest',response.result)
-            console.log('doApiAiRequest', this.isDefined(response.result))
-            console.log('doApiAiRequest', this.isDefined(response.result.fulfillment))
+            console.log('doApiAiRequest',esponse.result.metadata.intentName)
+            console.log('doApiAiRequest', this.isDefined(esponse.result.metadata.intentName))
+
             if (this.isDefined(response.result) && this.isDefined(response.result.fulfillment)) {
-                let responseText = response.result.fulfillment.speech;
                 let responseData = response.result.fulfillment.data;
                 let responseMessages = response.result.fulfillment.messages;
+                /**
+                 *      response.result.metadata.intentName
+                 *              Default Fallback Intent
+                 *              Default Welcome Intent
+                 *              eventsToCome
+                 */
+                let responseText = response.result.fulfillment.speech;
 
                 if (this.isDefined(responseData) && this.isDefined(responseData.facebook)) {
                     let facebookResponseData = responseData.facebook;
                     console.log('facebookResponseData', facebookResponseData)
                     this.doDataResponse(sender, facebookResponseData);
+                } else if(this.isDefined(response.result.metadata.intentName)){
+                    console.log("tryyyyyyyyyy")
+                    bot.beginDialog('help')
                 } else if (this.isDefined(responseMessages) && responseMessages.length > 0) {
                     console.log('responseMessages', responseMessages)
                     this.doRichContentResponse(sender, responseMessages);
@@ -635,5 +648,11 @@ app.post('/ai/', (req, res) => {
 app.listen(REST_PORT, () => {
     console.log('Rest service ready on port ' + REST_PORT);
 });
+
+bot.dialog('help', [
+    (session, args, next) => {
+        dialogs.helpDialog(session, args, next);
+    },
+]);
 
 facebookBot.doSubscribeRequest();
