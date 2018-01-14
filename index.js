@@ -93,7 +93,7 @@ server.post('/webhook', (req, res) => {
             console.log('messaging', entry.messaging);
             entry.messaging.forEach((event) => {
                 console.log('eveeeeent', event)
-                if(event.message.is_echo || event.delivery){
+                if(event.delivery || event.message.is_echo){
                     res.sendStatus(200);
                 }else{
                     if (event.postback) {
@@ -126,8 +126,7 @@ function processMessage(res, event) {
         // You may get a text or attachment but not both
         if (message.text) {
             let formattedMsg = message.text.toLowerCase().trim();
-            sendMessage(senderId, "try 1")
-            sendMessage(senderId, "try 2")
+            sendMessage(senderId, "boucle")
 
             // let apiai = apiaiApp.textRequest(formattedMsg, {
             //     sessionId: 'tabby_cat'
