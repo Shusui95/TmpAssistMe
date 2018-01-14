@@ -327,7 +327,7 @@ class FacebookBot {
 
     doApiAiRequest(apiaiRequest, sender) {
         apiaiRequest.on('response', (response) => {
-            console.log('doApiAiRequest',esponse.result.metadata.intentName)
+            console.log('doApiAiRequest',response.result.metadata.intentName)
             console.log('doApiAiRequest', this.isDefined(esponse.result.metadata.intentName))
 
             if (this.isDefined(response.result) && this.isDefined(response.result.fulfillment)) {
