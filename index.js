@@ -462,7 +462,7 @@ class FacebookBot {
                     this.doRichContentResponse(sender, JSON.stringify(response.result.metadata.intentName)+' '+JSON.stringify(response.result.fulfillment.messages));
                 } else if (this.isDefined(responseMessages) && responseMessages.length > 0) {
                     console.log('responseMessages', responseMessages)
-                    this.doRichContentResponse(sender, responseMessages);
+                    this.doTextResponse(sender, responseMessages);
                 }
                 else if (this.isDefined(responseText)) {
                     console.log('responseText', responseText)
