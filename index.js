@@ -128,8 +128,7 @@ function processMessage(res, event) {
         // You may get a text or attachment but not both
         if (message.text) {
             let formattedMsg = message.text.toLowerCase().trim();
-            sendMessage(senderId, "ok man")
-            res.status(200);
+            sendMessage(res, senderId, "ok man")
 
             // let apiai = apiaiApp.textRequest(formattedMsg, {
             //     sessionId: 'tabby_cat'
@@ -220,7 +219,7 @@ function processMessage(res, event) {
 // }
 
 // sends message to user
-function sendMessage(recipientId, message) {
+function sendMessage(res, recipientId, message) {
     console.log("messssssage", message)
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -233,10 +232,13 @@ function sendMessage(recipientId, message) {
     }, function (error, response, body) {
         if (error) {
             console.log('error send successful',error)
+            res.status(201);
         }else if(response){
             console.log('response send successful',response)
+            res.status(200);
         }else{
             console.log('body send successful',body)
+            res.status(201);
         }
     });
 }
