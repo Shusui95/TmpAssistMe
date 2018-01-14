@@ -28,6 +28,14 @@ const connector = new builder.ChatConnector({
     appPassword: process.env.APP_SECRET
 });
 
+server.get('/webhook', (req, res) => {
+    console.log('Verified webhook', req.query['hub.verify_token'], process.env.VERIFY_TOKEN, req.query['hub.challenge']);
+    if (req.query['hub.verify_token'] === process.env.VERIFICATION_TOKEN) {
+        res.status(200).send(req.query['hub.challenge']);
+    } else {
+        res.status(403).send('Verification failed. The tokens do not match.');
+    }
+});
 
 /**
  * Open an url
