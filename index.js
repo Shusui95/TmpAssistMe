@@ -515,7 +515,7 @@ server.listen(process.env.port || process.env.PORT || config.defaultPort, () => 
     console.log('%s listening to %s', server.name, server.url);
 });
 
-// Server index page
+// Server index page 
 server.get('/', function (req, res) {
     res.send('Deployed!');
     console.log("app", {
