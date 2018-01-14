@@ -509,6 +509,7 @@ app.post('/webhook/', (req, res) => {
         if (data.entry) {
             let entries = data.entry;
             entries.forEach((entry) => {
+                console.log('entry webhook', entry)
                 let messaging_events = entry.messaging;
                 if (messaging_events) {
                     messaging_events.forEach((event) => {
@@ -567,7 +568,7 @@ app.post('/ai/', (req, res) => {
         if (data.entry) {
             let entries = data.entry;
             entries.forEach((entry) => {
-                console.log('entry', entry)
+                console.log('entry ai', entry)
                 let messaging_events = entry.messaging;
                 if (messaging_events) {
                     messaging_events.forEach((event) => {
