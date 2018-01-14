@@ -530,17 +530,19 @@ app.post('/webhook/', (req, res) => {
                                                 data: l.payload.coordinates
                                             }
                                         };
-
+                                        console.log("processs webhook event 1", locationEvent)
                                         facebookBot.processFacebookEvent(locationEvent);
                                     });
                                 }
                             }
-
+                            console.log("processs webhook event 2", locationEvent)
                             facebookBot.processMessageEvent(event);
                         } else if (event.postback && event.postback.payload) {
                             if (event.postback.payload === "FACEBOOK_WELCOME") {
+                                console.log("processs webhook event 3", locationEvent)
                                 facebookBot.processFacebookEvent(event);
                             } else {
+                                console.log("processs webhook event 4", locationEvent)
                                 facebookBot.processMessageEvent(event);
                             }
                         }
@@ -589,17 +591,19 @@ app.post('/ai/', (req, res) => {
                                                 data: l.payload.coordinates
                                             }
                                         };
-
+                                        console.log("processs ai event 1", locationEvent)
                                         facebookBot.processFacebookEvent(locationEvent);
                                     });
                                 }
                             }
-
+                            console.log("processs ai event 2", locationEvent)
                             facebookBot.processMessageEvent(event);
                         } else if (event.postback && event.postback.payload) {
                             if (event.postback.payload === "FACEBOOK_WELCOME") {
+                                console.log("processs ai event 3", locationEvent)
                                 facebookBot.processFacebookEvent(event);
                             } else {
+                                console.log("processs ai event 4", locationEvent)
                                 facebookBot.processMessageEvent(event);
                             }
                         }
