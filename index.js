@@ -616,6 +616,7 @@ app.post('/ai/', (req, res) => {
             status: "ok"
         });
     } catch (err) {
+        console.log('errrr', err)
         return res.status(400).json({
             status: "error",
             error: err
