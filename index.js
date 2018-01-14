@@ -2,7 +2,7 @@ const config = require('./config/config');
 const dialogs = require('./dialogs/dialog');
 const bodyParser = require('body-parser');
 const builder = require('botbuilder');
-const restify = require('restify');
+const server = require('express')();
 const apiairecognizer = require('api-ai-recognizer');
 const footballProvider = require('./providers/footballProvider');
 
@@ -14,10 +14,16 @@ const footballProvider = require('./providers/footballProvider');
  */
 
 // Setup Restify Server
-const server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || config.defaultPort, function () {
+//const server = restify.createServer();
+server.listen(process.env.port || process.env.PORT || config.defaultPort, () => {
     console.log('%s listening to %s', server.name, server.url);
 });
+
+// Server index page
+server.get('/', function (req, res) {
+    res.send('Deployed!');
+});
+
 
 /**
  *  Create connector
@@ -34,9 +40,9 @@ server.get('/api/messages', (req, res) => {
     console.log('Verified webhook', req.query['hub.verify_token'], process.env.VERIFICATION_TOKEN, req.query['hub.challenge']);
     console.log("tmpppp", req.query)
     if (req.query['hub.verify_token'] === process.env.VERIFICATION_TOKEN) {
-        res.send(200, req.query['hub.challenge']);
+        res.status(200).send(req.query['hub.challenge']);
     } else {
-        res.send(403, 'Verification failed. The tokens do not match.');
+        res.status(403).send('Verification failed. The tokens do not match.');
     }
 });
 
