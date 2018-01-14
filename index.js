@@ -459,7 +459,7 @@ class FacebookBot {
                     this.doDataResponse(sender, facebookResponseData);
                 } else if(this.isDefined(response.result.metadata.intentName)){
                     console.log("tryyyyyyyyyy", response.result)
-                    this.doDataResponse(sender, response.result.metadata.intentName+' '+response.result.fulfillment.messages);
+                    this.doDataResponse(sender, JSON.stringify(response.result.metadata.intentName)+' '+JSON.stringify(response.result.fulfillment.messages));
                 } else if (this.isDefined(responseMessages) && responseMessages.length > 0) {
                     console.log('responseMessages', responseMessages)
                     this.doRichContentResponse(sender, responseMessages);
