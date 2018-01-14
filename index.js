@@ -22,6 +22,10 @@ server.listen(process.env.port || process.env.PORT || config.defaultPort, () => 
 // Server index page
 server.get('/', function (req, res) {
     res.send('Deployed!');
+    console.log("app", {
+        appId: process.env.APP_ID,
+        appPassword: process.env.APP_SECRET
+    })
 });
 
 
