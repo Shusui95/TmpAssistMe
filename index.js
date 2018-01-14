@@ -320,6 +320,9 @@ class FacebookBot {
 
     doApiAiRequest(apiaiRequest, sender) {
         apiaiRequest.on('response', (response) => {
+            console.log('doApiAiRequest',response.result)
+            console.log('doApiAiRequest', this.isDefined(response.result))
+            console.log('doApiAiRequest', this.isDefined(response.result.fulfillment))
             if (this.isDefined(response.result) && this.isDefined(response.result.fulfillment)) {
                 let responseText = response.result.fulfillment.speech;
                 let responseData = response.result.fulfillment.data;
@@ -327,11 +330,14 @@ class FacebookBot {
 
                 if (this.isDefined(responseData) && this.isDefined(responseData.facebook)) {
                     let facebookResponseData = responseData.facebook;
+                    console.log('facebookResponseData', facebookResponseData)
                     this.doDataResponse(sender, facebookResponseData);
                 } else if (this.isDefined(responseMessages) && responseMessages.length > 0) {
+                    console.log('responseMessages', responseMessages)
                     this.doRichContentResponse(sender, responseMessages);
                 }
                 else if (this.isDefined(responseText)) {
+                    console.log('responseText', responseText)
                     this.doTextResponse(sender, responseText);
                 }
 
@@ -535,14 +541,14 @@ app.post('/webhook/', (req, res) => {
                                     });
                                 }
                             }
-                            console.log("processs webhook event 2", locationEvent)
+                            console.log("processs webhook event 2", event)
                             facebookBot.processMessageEvent(event);
                         } else if (event.postback && event.postback.payload) {
                             if (event.postback.payload === "FACEBOOK_WELCOME") {
-                                console.log("processs webhook event 3", locationEvent)
+                                console.log("processs webhook event 3", event)
                                 facebookBot.processFacebookEvent(event);
                             } else {
-                                console.log("processs webhook event 4", locationEvent)
+                                console.log("processs webhook event 4", event)
                                 facebookBot.processMessageEvent(event);
                             }
                         }
@@ -597,14 +603,14 @@ app.post('/ai/', (req, res) => {
                                     });
                                 }
                             }
-                            console.log("processs ai event 2", locationEvent)
+                            console.log("processs ai event 2", event)
                             facebookBot.processMessageEvent(event);
                         } else if (event.postback && event.postback.payload) {
                             if (event.postback.payload === "FACEBOOK_WELCOME") {
-                                console.log("processs ai event 3", locationEvent)
+                                console.log("processs ai event 3", event)
                                 facebookBot.processFacebookEvent(event);
                             } else {
-                                console.log("processs ai event 4", locationEvent)
+                                console.log("processs ai event 4", event)
                                 facebookBot.processMessageEvent(event);
                             }
                         }
