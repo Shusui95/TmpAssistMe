@@ -29,12 +29,14 @@ const connector = new builder.ChatConnector({
 });
 
 server.get('/api/messages', (req, res) => {
+    console.log('reqqqq',req)
+    console.log('ressss',res)
     console.log('Verified webhook', req.query['hub.verify_token'], process.env.VERIFICATION_TOKEN, req.query['hub.challenge']);
     console.log("tmpppp", req.query)
     if (req.query['hub.verify_token'] === process.env.VERIFICATION_TOKEN) {
-        res.status(200).send(req.query['hub.challenge']);
+        res.send(200, req.query['hub.challenge']);
     } else {
-        res.status(403).send('Verification failed. The tokens do not match.');
+        res.send(403, 'Verification failed. The tokens do not match.');
     }
 });
 
