@@ -93,12 +93,16 @@ server.post('/webhook', (req, res) => {
             console.log('messaging', entry.messaging);
             entry.messaging.forEach((event) => {
                 console.log('eveeeeent', event)
-                if (event.postback) {
-                    processMessage(res, event);
+                if(event.message.is_echo){
+                    res.sendStatus(200);
+                }else{
+                    if (event.postback) {
+                        processMessage(res, event);
 
-                } else if (event.message) {
-                    processMessage(res, event);
+                    } else if (event.message) {
+                        processMessage(res, event);
 
+                    }
                 }
             });
         });
