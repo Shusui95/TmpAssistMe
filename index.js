@@ -28,6 +28,15 @@ const FACEBOOK_WELCOME = "FACEBOOK_WELCOME";
  *  The NodeJS client doesn't permit this for now
  */
 
+
+/**
+ *  Create connector
+ * @type {ChatConnector}
+ */
+const connector = new builder.ChatConnector({
+    appId: process.env.APP_ID,
+    appPassword: process.env.APP_SECRET
+});
 /**
  * Instanciate bot
  * @type {UniversalBot}
@@ -626,16 +635,6 @@ server.get('/', function (req, res) {
         appId: process.env.APP_ID,
         appPassword: process.env.APP_SECRET
     })
-});
-
-
-/**
- *  Create connector
- * @type {ChatConnector}
- */
-const connector = new builder.ChatConnector({
-    appId: process.env.APP_ID,
-    appPassword: process.env.APP_SECRET
 });
 
 server.get('/api/messages', (req, res) => {
