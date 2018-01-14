@@ -235,7 +235,6 @@ function sendMessage(res, recipientId, message) {
             res.status(201);
         }else if(response){
             console.log('response send successful',response)
-            res.status(200);
         }else{
             console.log('body send successful',body)
             res.status(201);
